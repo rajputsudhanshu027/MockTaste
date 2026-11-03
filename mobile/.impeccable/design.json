@@ -1,0 +1,551 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-02T17:39:38.032Z",
+  "title": "Design System: MockTaste Android",
+  "extensions": {
+    "colorMeta": {
+      "primary-light": {
+        "role": "primary",
+        "displayName": "Primary Light",
+        "canonical": "#384bc2",
+        "tonalRamp": [
+          "oklch(15.00% 0.18594 270.55)",
+          "oklch(26.43% 0.18594 270.55)",
+          "oklch(37.86% 0.18594 270.55)",
+          "oklch(49.29% 0.18594 270.55)",
+          "oklch(60.71% 0.18594 270.55)",
+          "oklch(72.14% 0.18594 270.55)",
+          "oklch(83.57% 0.18594 270.55)",
+          "oklch(95.00% 0.18594 270.55)"
+        ]
+      },
+      "primary-dark": {
+        "role": "primary",
+        "displayName": "Primary Dark",
+        "canonical": "#b8c4ff",
+        "tonalRamp": [
+          "oklch(15.00% 0.08397 275.50)",
+          "oklch(26.43% 0.08397 275.50)",
+          "oklch(37.86% 0.08397 275.50)",
+          "oklch(49.29% 0.08397 275.50)",
+          "oklch(60.71% 0.08397 275.50)",
+          "oklch(72.14% 0.08397 275.50)",
+          "oklch(83.57% 0.08397 275.50)",
+          "oklch(95.00% 0.08397 275.50)"
+        ]
+      },
+      "on-primary-light": {
+        "role": "primary",
+        "displayName": "On Primary Light",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15.00% 0.00000 89.88)",
+          "oklch(26.43% 0.00000 89.88)",
+          "oklch(37.86% 0.00000 89.88)",
+          "oklch(49.29% 0.00000 89.88)",
+          "oklch(60.71% 0.00000 89.88)",
+          "oklch(72.14% 0.00000 89.88)",
+          "oklch(83.57% 0.00000 89.88)",
+          "oklch(95.00% 0.00000 89.88)"
+        ]
+      },
+      "on-primary-dark": {
+        "role": "primary",
+        "displayName": "On Primary Dark",
+        "canonical": "#102577",
+        "tonalRamp": [
+          "oklch(15.00% 0.14169 266.32)",
+          "oklch(26.43% 0.14169 266.32)",
+          "oklch(37.86% 0.14169 266.32)",
+          "oklch(49.29% 0.14169 266.32)",
+          "oklch(60.71% 0.14169 266.32)",
+          "oklch(72.14% 0.14169 266.32)",
+          "oklch(83.57% 0.14169 266.32)",
+          "oklch(95.00% 0.14169 266.32)"
+        ]
+      },
+      "primary-container-light": {
+        "role": "primary",
+        "displayName": "Primary Container Light",
+        "canonical": "#e1e5ff",
+        "tonalRamp": [
+          "oklch(15.00% 0.03550 278.74)",
+          "oklch(26.43% 0.03550 278.74)",
+          "oklch(37.86% 0.03550 278.74)",
+          "oklch(49.29% 0.03550 278.74)",
+          "oklch(60.71% 0.03550 278.74)",
+          "oklch(72.14% 0.03550 278.74)",
+          "oklch(83.57% 0.03550 278.74)",
+          "oklch(95.00% 0.03550 278.74)"
+        ]
+      },
+      "primary-container-dark": {
+        "role": "primary",
+        "displayName": "Primary Container Dark",
+        "canonical": "#293b91",
+        "tonalRamp": [
+          "oklch(15.00% 0.14317 269.61)",
+          "oklch(26.43% 0.14317 269.61)",
+          "oklch(37.86% 0.14317 269.61)",
+          "oklch(49.29% 0.14317 269.61)",
+          "oklch(60.71% 0.14317 269.61)",
+          "oklch(72.14% 0.14317 269.61)",
+          "oklch(83.57% 0.14317 269.61)",
+          "oklch(95.00% 0.14317 269.61)"
+        ]
+      },
+      "on-primary-container-light": {
+        "role": "primary",
+        "displayName": "On Primary Container Light",
+        "canonical": "#102577",
+        "tonalRamp": [
+          "oklch(15.00% 0.14169 266.32)",
+          "oklch(26.43% 0.14169 266.32)",
+          "oklch(37.86% 0.14169 266.32)",
+          "oklch(49.29% 0.14169 266.32)",
+          "oklch(60.71% 0.14169 266.32)",
+          "oklch(72.14% 0.14169 266.32)",
+          "oklch(83.57% 0.14169 266.32)",
+          "oklch(95.00% 0.14169 266.32)"
+        ]
+      },
+      "on-primary-container-dark": {
+        "role": "primary",
+        "displayName": "On Primary Container Dark",
+        "canonical": "#e1e5ff",
+        "tonalRamp": [
+          "oklch(15.00% 0.03550 278.74)",
+          "oklch(26.43% 0.03550 278.74)",
+          "oklch(37.86% 0.03550 278.74)",
+          "oklch(49.29% 0.03550 278.74)",
+          "oklch(60.71% 0.03550 278.74)",
+          "oklch(72.14% 0.03550 278.74)",
+          "oklch(83.57% 0.03550 278.74)",
+          "oklch(95.00% 0.03550 278.74)"
+        ]
+      },
+      "secondary-container-light": {
+        "role": "secondary",
+        "displayName": "Secondary Container Light",
+        "canonical": "#e1e7f6",
+        "tonalRamp": [
+          "oklch(15.00% 0.02133 268.43)",
+          "oklch(26.43% 0.02133 268.43)",
+          "oklch(37.86% 0.02133 268.43)",
+          "oklch(49.29% 0.02133 268.43)",
+          "oklch(60.71% 0.02133 268.43)",
+          "oklch(72.14% 0.02133 268.43)",
+          "oklch(83.57% 0.02133 268.43)",
+          "oklch(95.00% 0.02133 268.43)"
+        ]
+      },
+      "secondary-container-dark": {
+        "role": "secondary",
+        "displayName": "Secondary Container Dark",
+        "canonical": "#29344f",
+        "tonalRamp": [
+          "oklch(15.00% 0.05045 266.71)",
+          "oklch(26.43% 0.05045 266.71)",
+          "oklch(37.86% 0.05045 266.71)",
+          "oklch(49.29% 0.05045 266.71)",
+          "oklch(60.71% 0.05045 266.71)",
+          "oklch(72.14% 0.05045 266.71)",
+          "oklch(83.57% 0.05045 266.71)",
+          "oklch(95.00% 0.05045 266.71)"
+        ]
+      },
+      "tertiary-light": {
+        "role": "tertiary",
+        "displayName": "Tertiary Light",
+        "canonical": "#16765c",
+        "tonalRamp": [
+          "oklch(15.00% 0.09431 169.39)",
+          "oklch(26.43% 0.09431 169.39)",
+          "oklch(37.86% 0.09431 169.39)",
+          "oklch(49.29% 0.09431 169.39)",
+          "oklch(60.71% 0.09431 169.39)",
+          "oklch(72.14% 0.09431 169.39)",
+          "oklch(83.57% 0.09431 169.39)",
+          "oklch(95.00% 0.09431 169.39)"
+        ]
+      },
+      "tertiary-dark": {
+        "role": "tertiary",
+        "displayName": "Tertiary Dark",
+        "canonical": "#8ed8b9",
+        "tonalRamp": [
+          "oklch(15.00% 0.08625 166.11)",
+          "oklch(26.43% 0.08625 166.11)",
+          "oklch(37.86% 0.08625 166.11)",
+          "oklch(49.29% 0.08625 166.11)",
+          "oklch(60.71% 0.08625 166.11)",
+          "oklch(72.14% 0.08625 166.11)",
+          "oklch(83.57% 0.08625 166.11)",
+          "oklch(95.00% 0.08625 166.11)"
+        ]
+      },
+      "tertiary-container-light": {
+        "role": "tertiary",
+        "displayName": "Tertiary Container Light",
+        "canonical": "#b4f0d5",
+        "tonalRamp": [
+          "oklch(15.00% 0.07120 165.42)",
+          "oklch(26.43% 0.07120 165.42)",
+          "oklch(37.86% 0.07120 165.42)",
+          "oklch(49.29% 0.07120 165.42)",
+          "oklch(60.71% 0.07120 165.42)",
+          "oklch(72.14% 0.07120 165.42)",
+          "oklch(83.57% 0.07120 165.42)",
+          "oklch(95.00% 0.07120 165.42)"
+        ]
+      },
+      "tertiary-container-dark": {
+        "role": "tertiary",
+        "displayName": "Tertiary Container Dark",
+        "canonical": "#064f3c",
+        "tonalRamp": [
+          "oklch(15.00% 0.07354 169.18)",
+          "oklch(26.43% 0.07354 169.18)",
+          "oklch(37.86% 0.07354 169.18)",
+          "oklch(49.29% 0.07354 169.18)",
+          "oklch(60.71% 0.07354 169.18)",
+          "oklch(72.14% 0.07354 169.18)",
+          "oklch(83.57% 0.07354 169.18)",
+          "oklch(95.00% 0.07354 169.18)"
+        ]
+      },
+      "background-light": {
+        "role": "neutral",
+        "displayName": "Background Light",
+        "canonical": "#f5f7fb",
+        "tonalRamp": [
+          "oklch(15.00% 0.00574 264.53)",
+          "oklch(26.43% 0.00574 264.53)",
+          "oklch(37.86% 0.00574 264.53)",
+          "oklch(49.29% 0.00574 264.53)",
+          "oklch(60.71% 0.00574 264.53)",
+          "oklch(72.14% 0.00574 264.53)",
+          "oklch(83.57% 0.00574 264.53)",
+          "oklch(95.00% 0.00574 264.53)"
+        ]
+      },
+      "background-dark": {
+        "role": "neutral",
+        "displayName": "Background Dark",
+        "canonical": "#10131d",
+        "tonalRamp": [
+          "oklch(15.00% 0.02098 271.37)",
+          "oklch(26.43% 0.02098 271.37)",
+          "oklch(37.86% 0.02098 271.37)",
+          "oklch(49.29% 0.02098 271.37)",
+          "oklch(60.71% 0.02098 271.37)",
+          "oklch(72.14% 0.02098 271.37)",
+          "oklch(83.57% 0.02098 271.37)",
+          "oklch(95.00% 0.02098 271.37)"
+        ]
+      },
+      "surface-light": {
+        "role": "neutral",
+        "displayName": "Surface Light",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15.00% 0.00000 89.88)",
+          "oklch(26.43% 0.00000 89.88)",
+          "oklch(37.86% 0.00000 89.88)",
+          "oklch(49.29% 0.00000 89.88)",
+          "oklch(60.71% 0.00000 89.88)",
+          "oklch(72.14% 0.00000 89.88)",
+          "oklch(83.57% 0.00000 89.88)",
+          "oklch(95.00% 0.00000 89.88)"
+        ]
+      },
+      "surface-dark": {
+        "role": "neutral",
+        "displayName": "Surface Dark",
+        "canonical": "#171b28",
+        "tonalRamp": [
+          "oklch(15.00% 0.02616 270.99)",
+          "oklch(26.43% 0.02616 270.99)",
+          "oklch(37.86% 0.02616 270.99)",
+          "oklch(49.29% 0.02616 270.99)",
+          "oklch(60.71% 0.02616 270.99)",
+          "oklch(72.14% 0.02616 270.99)",
+          "oklch(83.57% 0.02616 270.99)",
+          "oklch(95.00% 0.02616 270.99)"
+        ]
+      },
+      "on-surface-light": {
+        "role": "neutral",
+        "displayName": "On Surface Light",
+        "canonical": "rgba(28, 27, 31, 1)",
+        "tonalRamp": [
+          "oklch(15.00% 0.00780 297.21)",
+          "oklch(26.43% 0.00780 297.21)",
+          "oklch(37.86% 0.00780 297.21)",
+          "oklch(49.29% 0.00780 297.21)",
+          "oklch(60.71% 0.00780 297.21)",
+          "oklch(72.14% 0.00780 297.21)",
+          "oklch(83.57% 0.00780 297.21)",
+          "oklch(95.00% 0.00780 297.21)"
+        ]
+      },
+      "on-surface-dark": {
+        "role": "neutral",
+        "displayName": "On Surface Dark",
+        "canonical": "rgba(230, 225, 229, 1)",
+        "tonalRamp": [
+          "oklch(15.00% 0.00759 332.13)",
+          "oklch(26.43% 0.00759 332.13)",
+          "oklch(37.86% 0.00759 332.13)",
+          "oklch(49.29% 0.00759 332.13)",
+          "oklch(60.71% 0.00759 332.13)",
+          "oklch(72.14% 0.00759 332.13)",
+          "oklch(83.57% 0.00759 332.13)",
+          "oklch(95.00% 0.00759 332.13)"
+        ]
+      },
+      "surface-variant-light": {
+        "role": "neutral",
+        "displayName": "Surface Variant Light",
+        "canonical": "rgba(231, 224, 236, 1)",
+        "tonalRamp": [
+          "oklch(15.00% 0.01774 311.57)",
+          "oklch(26.43% 0.01774 311.57)",
+          "oklch(37.86% 0.01774 311.57)",
+          "oklch(49.29% 0.01774 311.57)",
+          "oklch(60.71% 0.01774 311.57)",
+          "oklch(72.14% 0.01774 311.57)",
+          "oklch(83.57% 0.01774 311.57)",
+          "oklch(95.00% 0.01774 311.57)"
+        ]
+      },
+      "surface-variant-dark": {
+        "role": "neutral",
+        "displayName": "Surface Variant Dark",
+        "canonical": "rgba(73, 69, 79, 1)",
+        "tonalRamp": [
+          "oklch(15.00% 0.01736 303.72)",
+          "oklch(26.43% 0.01736 303.72)",
+          "oklch(37.86% 0.01736 303.72)",
+          "oklch(49.29% 0.01736 303.72)",
+          "oklch(60.71% 0.01736 303.72)",
+          "oklch(72.14% 0.01736 303.72)",
+          "oklch(83.57% 0.01736 303.72)",
+          "oklch(95.00% 0.01736 303.72)"
+        ]
+      },
+      "outline-light": {
+        "role": "neutral",
+        "displayName": "Outline Light",
+        "canonical": "rgba(121, 116, 126, 1)",
+        "tonalRamp": [
+          "oklch(15.00% 0.01627 308.14)",
+          "oklch(26.43% 0.01627 308.14)",
+          "oklch(37.86% 0.01627 308.14)",
+          "oklch(49.29% 0.01627 308.14)",
+          "oklch(60.71% 0.01627 308.14)",
+          "oklch(72.14% 0.01627 308.14)",
+          "oklch(83.57% 0.01627 308.14)",
+          "oklch(95.00% 0.01627 308.14)"
+        ]
+      },
+      "outline-dark": {
+        "role": "neutral",
+        "displayName": "Outline Dark",
+        "canonical": "rgba(147, 143, 153, 1)",
+        "tonalRamp": [
+          "oklch(15.00% 0.01531 304.01)",
+          "oklch(26.43% 0.01531 304.01)",
+          "oklch(37.86% 0.01531 304.01)",
+          "oklch(49.29% 0.01531 304.01)",
+          "oklch(60.71% 0.01531 304.01)",
+          "oklch(72.14% 0.01531 304.01)",
+          "oklch(83.57% 0.01531 304.01)",
+          "oklch(95.00% 0.01531 304.01)"
+        ]
+      },
+      "error-light": {
+        "role": "neutral",
+        "displayName": "Error Light",
+        "canonical": "rgba(179, 38, 30, 1)",
+        "tonalRamp": [
+          "oklch(15.00% 0.17832 28.70)",
+          "oklch(26.43% 0.17832 28.70)",
+          "oklch(37.86% 0.17832 28.70)",
+          "oklch(49.29% 0.17832 28.70)",
+          "oklch(60.71% 0.17832 28.70)",
+          "oklch(72.14% 0.17832 28.70)",
+          "oklch(83.57% 0.17832 28.70)",
+          "oklch(95.00% 0.17832 28.70)"
+        ]
+      },
+      "error-dark": {
+        "role": "neutral",
+        "displayName": "Error Dark",
+        "canonical": "rgba(242, 184, 181, 1)",
+        "tonalRamp": [
+          "oklch(15.00% 0.06771 22.01)",
+          "oklch(26.43% 0.06771 22.01)",
+          "oklch(37.86% 0.06771 22.01)",
+          "oklch(49.29% 0.06771 22.01)",
+          "oklch(60.71% 0.06771 22.01)",
+          "oklch(72.14% 0.06771 22.01)",
+          "oklch(83.57% 0.06771 22.01)",
+          "oklch(95.00% 0.06771 22.01)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "displaySmall": {
+        "displayName": "displaySmall",
+        "purpose": "Inherited React Native Paper MD3 Android type variant; frontmatter dimensions map to logical native units."
+      },
+      "headlineMedium": {
+        "displayName": "headlineMedium",
+        "purpose": "Inherited React Native Paper MD3 Android type variant; frontmatter dimensions map to logical native units."
+      },
+      "headlineSmall": {
+        "displayName": "headlineSmall",
+        "purpose": "Inherited React Native Paper MD3 Android type variant; frontmatter dimensions map to logical native units."
+      },
+      "titleLarge": {
+        "displayName": "titleLarge",
+        "purpose": "Inherited React Native Paper MD3 Android type variant; frontmatter dimensions map to logical native units."
+      },
+      "titleMedium": {
+        "displayName": "titleMedium",
+        "purpose": "Inherited React Native Paper MD3 Android type variant; frontmatter dimensions map to logical native units."
+      },
+      "bodyLarge": {
+        "displayName": "bodyLarge",
+        "purpose": "Inherited React Native Paper MD3 Android type variant; frontmatter dimensions map to logical native units."
+      },
+      "bodyMedium": {
+        "displayName": "bodyMedium",
+        "purpose": "Inherited React Native Paper MD3 Android type variant; frontmatter dimensions map to logical native units."
+      },
+      "bodySmall": {
+        "displayName": "bodySmall",
+        "purpose": "Inherited React Native Paper MD3 Android type variant; frontmatter dimensions map to logical native units."
+      },
+      "labelLarge": {
+        "displayName": "labelLarge",
+        "purpose": "Inherited React Native Paper MD3 Android type variant; frontmatter dimensions map to logical native units."
+      }
+    },
+    "shadows": [
+      {
+        "name": "native-level-0",
+        "value": "elevation: 0",
+        "purpose": "Native level-0 list surfaces; no custom app shadow."
+      },
+      {
+        "name": "native-level-1",
+        "value": "elevation: 1",
+        "purpose": "Paper panels and test timer. Inherited tonal background is rgb(247, 243, 249) in light and rgb(37, 35, 42) in dark; native appearance unreviewed."
+      }
+    ],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "expanded",
+        "value": "720px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Contained Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Browser reference for the native 48dp minimum contained action; native ripple is not reproduced.",
+      "html": "<button class=\"ds-primary\">Make my mini quiz</button>",
+      "css": ".ds-primary{min-height:48px;padding:10px 24px;border:0;border-radius:20px;background:#384bc2;color:#ffffff;font:500 14px/20px sans-serif;letter-spacing:.1px;cursor:pointer}.ds-primary:hover{background:color-mix(in srgb,#384bc2 92%,#ffffff)}.ds-primary:active{background:color-mix(in srgb,#384bc2 88%,#ffffff)}.ds-primary:disabled{opacity:.38;cursor:default}.ds-primary:focus-visible,.ds-outlined:focus-visible,.ds-field:focus-visible,.ds-nav button:focus-visible,.ds-chip:focus-visible{outline:3px solid #384bc2;outline-offset:3px}"
+    },
+    {
+      "name": "Outlined Button",
+      "kind": "button",
+      "refersTo": "button-outlined",
+      "description": "Browser reference for the native outlined secondary action.",
+      "html": "<button class=\"ds-outlined\">Retake photo</button>",
+      "css": ".ds-outlined{min-height:48px;padding:9px 23px;border:1px solid rgba(121,116,126,1);border-radius:20px;background:transparent;color:#384bc2;font:500 14px/20px sans-serif;letter-spacing:.1px;cursor:pointer}.ds-outlined:hover{background:#384bc214}.ds-outlined:active{background:#384bc21f}.ds-outlined:disabled{opacity:.38;cursor:default}.ds-primary:focus-visible,.ds-outlined:focus-visible,.ds-field:focus-visible,.ds-nav button:focus-visible,.ds-chip:focus-visible{outline:3px solid #384bc2;outline-offset:3px}"
+    },
+    {
+      "name": "Outlined Field",
+      "kind": "input",
+      "refersTo": "field-outlined",
+      "description": "Browser reference for the native outlined field's size, type, and color roles; floating labels remain native.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-caption\">What are you studying?</label><input class=\"ds-field\" id=\"ds-caption\" value=\"Biology revision\">",
+      "css": ".ds-field-label{display:block;margin-bottom:4px;color:rgba(28,27,31,1);font:400 12px/16px sans-serif}.ds-field{display:block;width:calc(100% - 34px);min-height:54px;padding:0 16px;border:1px solid rgba(121,116,126,1);border-radius:4px;background:#ffffff;color:rgba(28,27,31,1);font:400 16px/24px sans-serif;letter-spacing:.15px}.ds-field:hover{border-color:rgba(28,27,31,1)}.ds-field:focus{border-color:#384bc2}.ds-primary:focus-visible,.ds-outlined:focus-visible,.ds-field:focus-visible,.ds-nav button:focus-visible,.ds-chip:focus-visible{outline:3px solid #384bc2;outline-offset:3px}"
+    },
+    {
+      "name": "Five Destination Navigation",
+      "kind": "nav",
+      "description": "Text-only browser reference for the native bottom bar; the app renders Material icons and switches to a drawer at 720dp.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><button aria-current=\"page\">Camera</button><button>Snaps</button><button>Mates</button><button>Study</button><button>Profile</button></nav>",
+      "css": ".ds-nav{display:flex;gap:4px;padding:12px 4px;background:rgb(243,237,246)}.ds-nav button{flex:1;min-height:48px;padding:8px 4px;border:0;border-radius:16px;background:transparent;color:rgba(28,27,31,1);font:500 12px/16px sans-serif;cursor:pointer}.ds-nav button[aria-current=page]{background:#e1e7f6}.ds-nav button:hover{background:#384bc214}.ds-nav button:active{background:#384bc21f}.ds-primary:focus-visible,.ds-outlined:focus-visible,.ds-field:focus-visible,.ds-nav button:focus-visible,.ds-chip:focus-visible{outline:3px solid #384bc2;outline-offset:3px}"
+    },
+    {
+      "name": "Capture Prompt Chip",
+      "kind": "chip",
+      "description": "Browser reference for the camera's native Chip prompt, with text preserved and icon omitted.",
+      "html": "<span class=\"ds-chip\">Capture your study page</span>",
+      "css": ".ds-chip{display:inline-flex;align-items:center;min-height:32px;padding:0 8px;border-radius:8px;background:rgba(231,224,236,1);color:rgba(73,69,79,1);font:500 14px/20px sans-serif;letter-spacing:.1px}.ds-primary:focus-visible,.ds-outlined:focus-visible,.ds-field:focus-visible,.ds-nav button:focus-visible,.ds-chip:focus-visible{outline:3px solid #384bc2;outline-offset:3px}"
+    },
+    {
+      "name": "Study Surface",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Browser reference for a 24dp-padded native level-1 Surface; this tonal preview is not a native elevation capture.",
+      "html": "<section class=\"ds-panel\"><h2>Mini quiz complete</h2><p>Your answers and score stay private.</p></section>",
+      "css": ".ds-panel{padding:24px;border-radius:16px;background:rgb(247,243,249);color:rgba(28,27,31,1)}.ds-panel h2{margin:0;font:400 24px/32px sans-serif}.ds-panel p{margin:12px 0;font:400 16px/24px sans-serif;letter-spacing:.15px}"
+    },
+    {
+      "name": "Practice Day",
+      "kind": "custom",
+      "refersTo": "calendar-day",
+      "description": "Browser reference for the source calendar's three nonblank count treatments.",
+      "html": "<div class=\"ds-days\" aria-label=\"No activity, one completion, three completions\"><span></span><span></span><span></span></div>",
+      "css": ".ds-days{display:flex;gap:4px;padding:16px 0}.ds-days span{display:block;width:12px;height:12px;border-radius:2px;background:rgba(231,224,236,1)}.ds-days span:nth-child(2){background:#b4f0d5}.ds-days span:nth-child(3){background:#16765c}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Study it. Snap it. Make it stick.",
+    "overview": "MockTaste's Android app translates the existing indigo, navy, and green identity into native Material 3 controls. The camera leads into private practice and deliberate sharing; light and dark modes follow the device.\n\nThis document records source-observed rules from `src/theme.ts`, `src/App.tsx`, `src/screens.tsx`, `src/useWorkspace.ts`, and the installed React Native Paper MD3 defaults. It is separate from the web system in the repository-root DESIGN.md. No Android device or emulator rendering has been inspected: installation, light/dark appearance, enlarged type, camera permissions, and gesture navigation still need native review. **Visual finish: recapture.** A JavaScript bundle or successful native prebuild does not establish visual approval.",
+    "keyCharacteristics": [
+      "Native Material controls and system Android type.",
+      "Camera-first navigation with five persistent destinations.",
+      "Tonal working surfaces, indigo actions, and green activity.",
+      "Explicit photo preview and recipient selection before sharing."
+    ],
+    "rules": [
+      {
+        "name": "The Role Pair Rule",
+        "body": "Use the active theme's role and its on-role partner for controls and text; select light or dark through appTheme rather than mixing modes.",
+        "section": "colors"
+      },
+      {
+        "name": "The Native Type Rule",
+        "body": "Use Paper Text variants and inherited Android fonts. Keep React Native font scaling enabled; enlarged-type rendering still requires device review.",
+        "section": "typography"
+      },
+      {
+        "name": "The Native Surface Rule",
+        "body": "Keep Paper's native Surface and state treatments. Do not copy the web panel's flat-surface rule into Android.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do retain all five destination labels and the camera as the initial destination.",
+      "Do use the shared Button and Field wrappers for consistent minimum dimensions.",
+      "Do preserve safe-area padding, standard Back behavior, labeled camera controls, and readable photo previews.",
+      "Do verify light/dark modes and enlarged fonts on Android before claiming rendered approval."
+    ],
+    "donts": [
+      "Don't import the web Public Sans face, sidebar geometry, or CSS values as Android defaults.",
+      "Don't treat the sidecar's browser component references as native screenshots or approval.",
+      "Don't expose personal quiz answers or scores in shared snap views.",
+      "Don't add a native AI sign-in claim: this build uses the same account's desktop-managed connection."
+    ]
+  }
+}

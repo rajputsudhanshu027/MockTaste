@@ -20,6 +20,7 @@ async function api(url, options = {}) {
     body: options.body && typeof options.body !== 'string' ? JSON.stringify(options.body) : options.body,
   });
   const data = await response.json().catch(() => ({}));
+  if (response.status === 401) window.location.assign('/');
   if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
   return data;
 }
@@ -68,7 +69,7 @@ function shell(content) {
   const pageName = ({ overview: 'Overview', build: 'Create a test', history: 'Tests & results', friends: 'Sharing & reports', library: 'Study library', sources: 'Question sources', settings: 'Settings', material: 'Document review', 'friend-report': 'Report review', ready: 'Test ready', test: 'Test results', job: 'Preparation', plan: 'Weekly plan' })[state.view] || 'Workspace';
   app.innerHTML = `<div class="shell">
     <aside class="sidebar" aria-label="Main navigation">
-      <a class="brand" href="#overview" data-action="nav" data-view="overview"><img class="brand-mark" src="/logo.svg" width="36" height="36" alt=""><span><strong>MockTaste</strong><small>Your exam workspace</small></span></a>
+      <a class="brand" href="#overview" data-action="nav" data-view="overview"><img class="brand-mark" src="/logo.svg" width="36" height="36" alt=""><span><strong>MockTaste</strong><small>Private admin panel</small></span></a>
       <button class="btn sidebar-create" type="button" data-action="nav" data-view="build">${icon('build')}Create a test</button>
       <nav class="nav" aria-label="Main navigation">
         ${navItem('overview', 'Overview')}${navItem('build', 'Create a test')}${navItem('history', 'My tests')}${navItem('friends', 'Sharing & reports')}
@@ -79,7 +80,7 @@ function shell(content) {
     </aside>
     <div class="main">
       <header class="topbar"><div class="breadcrumb"><span>Workspace</span>${icon('chevron')}<strong>${pageName}</strong></div>
-        <div class="topbar-actions"><span class="status-pill ${connected ? 'online' : ''}">${connected ? 'AI connected' : 'AI disconnected'}</span><button type="button" class="account-button" data-action="nav" data-view="settings" aria-label="Open account settings"><span class="account-avatar">${icon('person')}</span><span>${connected ? 'My account' : 'Connect account'}</span></button></div>
+        <div class="topbar-actions"><span class="status-pill ${connected ? 'online' : ''}">${connected ? 'AI connected' : 'AI disconnected'}</span><button type="button" class="account-button" data-action="nav" data-view="settings" aria-label="Open account settings"><span class="account-avatar">${icon('person')}</span><span>${connected ? 'My account' : 'Connect account'}</span></button><button type="button" class="btn small" data-action="account-logout">Sign out</button></div>
       </header>
       <main class="content" id="main-content" data-view="${esc(state.view)}">${content}</main>
     </div>
@@ -407,6 +408,7 @@ document.addEventListener('click', async (event) => {
   const action = target.dataset.action;
   event.preventDefault();
   try {
+    if (action === 'account-logout') { await api('/api/account/logout', { method: 'POST' }); window.location.assign('/'); return; }
     if (action === 'nav') return navigate(target.dataset.view, target.dataset.mode);
     if (action === 'mode') { state.buildMode = target.dataset.mode; return render(); }
     if (action === 'resume-draft') {

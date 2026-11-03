@@ -7,6 +7,9 @@
     "start": "node server.mjs",
     "dev": "node --watch server.mjs",
     "share": "node scripts/share.mjs",
+    "admin": "node scripts/create-admin.mjs",
+    "dev:mobile": "node --watch server.mjs --mobile-port 4175",
+    "mobile": "npm --prefix mobile start",
     "test": "node --test"
   },
   "engines": {

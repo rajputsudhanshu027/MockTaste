@@ -18,10 +18,13 @@ import { createFriendLink, revokeFriendLink, friendReportDetail, saveGuidance, r
 import { createReportPdf, reportFilename } from './lib/report-pdf.mjs';
 import { createFriendServer } from './friend-server.mjs';
 import { FriendTunnel } from './lib/tunnel.mjs';
+import { Accounts, sessionCookie } from './lib/accounts.mjs';
+import { StudentWorkspaces } from './lib/student-workspace.mjs';
+import { createMobileHandler, mobileOrigin } from './lib/mobile-api.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.join(root, 'public');
-const options = parseArgs({ options: { port: { type: 'string' }, 'friend-port': { type: 'string' } } }).values;
+const options = parseArgs({ options: { port: { type: 'string' }, 'friend-port': { type: 'string' }, 'mobile-port': { type: 'string' }, 'mobile-origin': { type: 'string' }, 'mobile-bind': { type: 'string' } } }).values;
 const port = Number(options.port || process.env.PORT || 4173);
 const friendPort = Number(options['friend-port'] || process.env.FRIEND_PORT || port + 1);
 const friendBind = process.env.FRIEND_BIND || '0.0.0.0';
@@ -32,6 +35,11 @@ const auth = new ChatGPTAuth(dataDir, baseUrl);
 const ai = new ChatGPTAI(auth);
 const jobs = new Map();
 const friendTunnel = new FriendTunnel(friendPort);
+const accounts = new Accounts(dataDir);
+const students = new StudentWorkspaces(dataDir, baseUrl, accounts);
+const mobilePort = Number(options['mobile-port'] || process.env.MOBILE_PORT || 0);
+if (!Number.isInteger(mobilePort) || mobilePort < 0 || mobilePort > 65535 || (mobilePort && (mobilePort === port || mobilePort === friendPort))) throw new Error('Choose a separate mobile port between 1 and 65535');
+const mobileBase = mobilePort ? mobileOrigin(options['mobile-origin'] || process.env.MOBILE_ORIGIN || `http://127.0.0.1:${mobilePort}`) : null;
 
 function friendAddresses() {
   const addresses = Object.values(os.networkInterfaces()).flat().filter((item) => item && item.family === 'IPv4' && !item.internal).map((item) => `http://${item.address}:${friendPort}`);
@@ -486,7 +494,7 @@ async function handleApi(req, res, url) {
 }
 
 function serveStatic(res, pathname) {
-  const files = { '/': 'index.html', '/app.js': 'app.js', '/styles.css': 'styles.css', '/logo.svg': 'logo.svg', '/favicon.svg': 'favicon.svg', '/fonts/public-sans.ttf': 'fonts/public-sans.ttf' };
+  const files = { '/': 'workspace.html', '/admin': 'index.html', '/workspace.js': 'workspace.js', '/workspace.css': 'workspace.css', '/app.js': 'app.js', '/styles.css': 'styles.css', '/logo.svg': 'logo.svg', '/favicon.svg': 'favicon.svg', '/fonts/public-sans.ttf': 'fonts/public-sans.ttf' };
   const name = files[pathname];
   if (!name) return json(res, 404, { error: 'Not found' });
   const file = path.join(publicDir, name);
@@ -505,17 +513,49 @@ const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, baseUrl);
     ensureOrigin(req);
+    if (url.pathname === '/api/account' && req.method === 'GET') return json(res, 200, { user: accounts.current(req) });
+    if (url.pathname === '/api/account/signup' && req.method === 'POST') {
+      accounts.limit(`signup:${req.socket.remoteAddress}`, 10, 3600000);
+      const user = await accounts.create(await readBody(req, 8192));
+      res.setHeader('set-cookie', sessionCookie(accounts.startSession(user.id)));
+      return json(res, 201, { user });
+    }
+    if (url.pathname === '/api/account/login' && req.method === 'POST') {
+      const body = await readBody(req, 8192);
+      const { user, token } = await accounts.login(body.email, body.password, req.socket.remoteAddress);
+      res.setHeader('set-cookie', sessionCookie(token));
+      return json(res, 200, { user });
+    }
+    if (url.pathname === '/api/account/logout' && req.method === 'POST') {
+      accounts.logout(req);
+      res.setHeader('set-cookie', sessionCookie('', true));
+      return json(res, 200, { signedOut: true });
+    }
     if (url.pathname === '/auth/callback') {
+      const user = accounts.require(req, ['student', 'admin']);
+      const destination = user.role === 'admin' ? '/admin' : '/';
+      const accountAuth = user.role === 'admin' ? auth : students.forUser(user).auth;
       try {
-        await auth.complete(url.searchParams);
-        res.writeHead(302, { location: '/?connected=1', 'cache-control': 'no-store' });
+        await accountAuth.complete(url.searchParams);
+        res.writeHead(302, { location: `${destination}?connected=1`, 'cache-control': 'no-store' });
       } catch (error) {
-        res.writeHead(302, { location: `/?auth_error=${encodeURIComponent(error.message)}`, 'cache-control': 'no-store' });
+        res.writeHead(302, { location: `${destination}?auth_error=${encodeURIComponent(error.message)}`, 'cache-control': 'no-store' });
       }
       return res.end();
     }
-    if (url.pathname.startsWith('/api/')) return await handleApi(req, res, url);
+    if (url.pathname.startsWith('/api/student/')) {
+      const user = accounts.require(req, ['student']);
+      return await students.handle(req, res, url, user, { json, readBody });
+    }
+    if (url.pathname.startsWith('/api/')) {
+      accounts.require(req, ['admin']);
+      return await handleApi(req, res, url);
+    }
     if (req.method !== 'GET') return json(res, 405, { error: 'Method not allowed' });
+    if (url.pathname === '/admin') {
+      const user = accounts.current(req);
+      if (!user || user.role !== 'admin') { res.writeHead(302, { location: '/', 'cache-control': 'no-store' }); return res.end(); }
+    }
     return serveStatic(res, url.pathname);
   } catch (error) { return fail(res, error); }
 });
@@ -523,6 +563,13 @@ const server = http.createServer(async (req, res) => {
 server.listen(port, '127.0.0.1', () => {
   process.stdout.write(`MockTaste is ready at ${baseUrl}\n`);
 });
+
+if (mobileBase) {
+  http.createServer(createMobileHandler({ origin: mobileBase, accounts, students, json, readBody }))
+    .listen(mobilePort, options['mobile-bind'] || process.env.MOBILE_BIND || '127.0.0.1', () => {
+      process.stdout.write(`Student mobile API is ready at ${mobileBase}\n`);
+    });
+}
 
 function stopFriendTunnel() {
   friendTunnel.stop();

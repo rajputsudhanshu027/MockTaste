@@ -3,3 +3,7 @@ node_modules/
 .DS_Store
 .android-tools/
 artifacts/
+finetune/.venv/
+finetune/outputs/
+finetune/reports/*.json
+finetune/__pycache__/

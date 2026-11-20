@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MockTaste — Project Brief</title>
+  <style>
+    :root { --bg:#f5f5f5; --surface:#fff; --ink:#141414; --muted:#5c5c5c; --line:#d9d9d9; --green:#30a81d; --forest:#21935b; --yellow:#fecc33; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    main { width:min(780px,calc(100% - 36px)); margin:48px auto; }
+    header { padding:30px 32px; background:var(--ink); color:var(--surface); border-radius:10px; }
+    .mark { display:flex; gap:8px; align-items:center; font-size:.8rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .dot { width:11px; height:11px; border-radius:50%; background:var(--green); }
+    h1 { margin:18px 0 8px; font-size:clamp(2.2rem,7vw,3.5rem); line-height:1.05; letter-spacing:-.05em; }
+    header p { max-width:580px; margin:0; color:#e9e9e9; }
+    section { margin-top:30px; }
+    h2 { margin:0 0 10px; font-size:1.35rem; letter-spacing:-.02em; }
+    p { margin:0 0 12px; }
+    .cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px; }
+    article { padding:18px; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+    h3 { margin:0 0 6px; font-size:1rem; }
+    article p { margin:0; color:var(--muted); font-size:.94rem; }
+    .flow { padding:17px 19px; background:var(--surface); border-left:4px solid var(--forest); border-radius:0 8px 8px 0; }
+    .flow strong { color:var(--forest); }
+    .note { padding:16px 18px; background:#fff9e5; border-left:4px solid var(--yellow); border-radius:0 8px 8px 0; }
+    footer { margin-top:32px; padding-top:14px; border-top:1px solid var(--line); color:var(--muted); font-size:.82rem; }
+    @media(max-width:580px) { main{margin:18px auto 32px} header{padding:24px} .cards{grid-template-columns:1fr} }
+    @media print { main{width:100%;margin:0} header,article,.flow,.note{break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact} }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="mark"><span class="dot"></span> Project brief</div>
+      <h1>MockTaste</h1>
+      <p>A private study workspace that helps learners turn their notes into practice tests and track what they have learned.</p>
+    </header>
+
+    <section>
+      <h2>What it does</h2>
+      <p>MockTaste started as an RRB NTPC exam practice tool and now supports personal study across subjects. Learners add notes or documents, generate multiple-choice tests, take timed practice, review explanations, and follow their progress.</p>
+      <div class="cards">
+        <article><h3>Study library</h3><p>Organize notes, PDFs, Word files, and images in a personal workspace.</p></article>
+        <article><h3>Practice tests</h3><p>Build tests from selected material, with answers checked against evidence.</p></article>
+        <article><h3>Review and progress</h3><p>See scores, explanations, topic results, and completed practice history.</p></article>
+        <article><h3>Private by default</h3><p>The app runs on the learner’s computer and stores study history locally.</p></article>
+      </div>
+    </section>
+
+    <section>
+      <h2>How deep learning is used</h2>
+      <p>Deep learning powers language models that can read text and produce new text. In MockTaste, the current app can use the learner’s connected ChatGPT service to read scanned pages and draft questions from selected study material. A second AI pass checks answers. The app itself manages saved tests, timers, scores, and review.</p>
+      <p>The project also includes an experiment to fine-tune a small open model, Qwen2.5-0.5B-Instruct, using QLoRA. This trains a small adapter to better follow MockTaste’s question format while keeping the base model mostly frozen. It is an experiment, not a model trained from scratch.</p>
+      <div class="note"><strong>Current status:</strong> the fine-tuned model is not connected to the app and is not ready for student use. The first run used 8 training examples and 2 evaluation examples. It learned the output format in this tiny sample, but a generated question had a wrong answer. More data and much stronger review are needed before judging quality.</div>
+    </section>
+
+    <section>
+      <h2>Why explore fine-tuning?</h2>
+      <p>A model tailored to the project might follow the required format more consistently and could eventually run locally. These are goals to test, not proven results. A useful evaluation needs many examples kept separate from training, checks that answers are correct and supported by sources, and human review for clarity and ambiguity.</p>
+    </section>
+
+    <footer>Summary based on the project README, product brief, fine-tuning guide, and initial evaluation notes.</footer>
+  </main>
+</body>
+</html>

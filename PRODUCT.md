@@ -37,7 +37,7 @@ The Node.js backend runs on a computer. Its existing RRB preparation and friend-
 
 ## Brand Commitments
 
-Keep the MockTaste name, logo, and navy/indigo/green identity. Web retains Public Sans and its established interface; Android uses Material 3 components, system type, native navigation, safe-area insets, and light/dark themes.
+Keep the MockTaste name and logo shape. The shared interface uses a paper-and-ink palette with green and ember reserved for functional signals. Web uses Arial/system sans with a mono interface voice; Android keeps Material 3 components, system type, native navigation, safe-area insets, and light/dark themes.
 
 ## Product Principles
 

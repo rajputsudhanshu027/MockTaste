@@ -3,18 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#384bc2">
+  <meta name="theme-color" content="#f5f5f5">
   <meta name="description" content="Your private study workspace. Save notes, make practice tests from your material, and build a consistent study habit.">
   <title>MockTaste · Your study workspace</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/public-sans.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/design-system/components.css">
+  <link rel="stylesheet" href="/design-system/patterns.css">
   <link rel="stylesheet" href="/workspace.css">
   <script type="module" src="/workspace.js"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Skip to content</a>
-  <div id="workspace"><main id="main-content" class="loading-state"><p role="status">Opening your workspace…</p></main></div>
+  <a class="ds-skip-link" href="#main-content">Skip to content</a>
+  <div id="workspace"><div class="ds-page ds-page--entry" data-ds-theme="night"><main id="main-content" class="ds-entry"><p class="ds-copy" role="status">Opening your workspace…</p></main></div></div>
   <div id="toast" role="status" aria-live="polite"></div>
   <noscript>Enable JavaScript to sign in and use your study workspace.</noscript>
 </body>

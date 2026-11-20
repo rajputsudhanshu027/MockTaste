@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
+import { MockTestLifecycle } from '../lib/mock-test-lifecycle.mjs';
 import { StudentWorkspaces } from '../lib/student-workspace.mjs';
 
 function fixture(t) {
@@ -24,6 +25,42 @@ function fixture(t) {
 function paper() {
   return { id: randomUUID(), title: 'Biology', durationMinutes: 5, penalty: 0, createdAt: new Date().toISOString(), questions: [{ id: randomUUID(), stem: 'Which produces ATP?', options: ['Mitochondria', 'Nucleus', 'Ribosome', 'Lysosome'], answerIndex: 0, explanation: 'Mitochondria produce ATP.', topic: 'Biology', sourceQuote: 'Mitochondria produce ATP.' }] };
 }
+
+test('Mock Test lifecycle owns start, answer, submission, and answer visibility rules', async t => {
+  const { spaces, alice } = fixture(t);
+  const { store } = spaces.forUser(alice);
+  const lifecycle = new MockTestLifecycle(store);
+  const testPaper = paper();
+  store.update(state => state.tests.push(testPaper));
+
+  assert.equal(lifecycle.detail(testPaper, 1000).questions[0].answerIndex, undefined);
+  assert.equal(lifecycle.start(testPaper, 1000).deadline, 301000);
+  assert.deepEqual(lifecycle.saveAnswers(testPaper, { [testPaper.questions[0].id]: 0 }, 2000), { saved: true });
+  assert.equal(lifecycle.submit(testPaper, 3000), true);
+  assert.equal(lifecycle.submit(testPaper, 4000), false);
+
+  const submitted = lifecycle.detail(testPaper, 5000);
+  assert.equal(submitted.questions[0].answerIndex, 0);
+  assert.equal(submitted.test.attempt.result.correct, 1);
+  assert.throws(() => lifecycle.saveAnswers(testPaper, {}, 5000), /already submitted/);
+});
+
+test('Mock Test lifecycle finishes expired attempts at the original deadline once', async t => {
+  const { spaces, alice } = fixture(t);
+  const { store } = spaces.forUser(alice);
+  const lifecycle = new MockTestLifecycle(store);
+  const testPaper = paper();
+  testPaper.startedAt = new Date(1000).toISOString();
+  testPaper.savedAnswers = { [testPaper.questions[0].id]: 0 };
+  store.update(state => state.tests.push(testPaper));
+
+  lifecycle.finishExpired(300000);
+  lifecycle.finishExpired(400000);
+
+  assert.equal(store.state.attempts.length, 1);
+  assert.equal(store.state.attempts[0].submittedAt, new Date(301000).toISOString());
+  assert.equal(store.state.attempts[0].result.correct, 1);
+});
 
 test('student libraries, AI credentials, tests, jobs and activity stay separated across accounts', async t => {
   const { spaces, alice, bob, request, dir } = fixture(t);

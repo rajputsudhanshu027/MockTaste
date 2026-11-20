@@ -54,6 +54,8 @@ Open `http://127.0.0.1:4173` to sign in. Admin accounts open the existing dashbo
 
 Connect your ChatGPT Plus account in **Settings** before reading scanned pages or generating questions. This uses [Sign in with ChatGPT](https://developers.openai.com/siwc/quickstart) for eligible plan-backed requests, with no separate paid API key. The app stops generation when plan usage is unavailable. Only selected study text/images are sent for AI requests; saved history stays local. ChatGPT sign-in and AI generation require internet, while prepared tests and answer review work offline as long as the local server is running.
 
+For the optional local QLoRA demo, see [`finetune/README.md`](finetune/README.md). It can generate student practice questions on the RTX 2050; ChatGPT remains responsible for the independent answer audit.
+
 ## Admin workflow
 
 1. In **Create a test**, upload a PDF, DOCX, or ordered image group. The app reads the complete document and identifies its supported topics automatically. Unreadable or complex pages are listed. Use **Study library** to change the range or correct extracted text.

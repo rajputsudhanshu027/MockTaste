@@ -58,6 +58,19 @@ test('HTTP routes protect the original admin panel and isolate public account wo
     return response.headers.get('set-cookie').split(';')[0];
   };
   assert.equal((await request('/')).status, 200);
+  for (const route of ['/design-system', '/design-system/']) {
+    const response = await request(route);
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get('content-type'), /text\/html/);
+    assert.match(await response.text(), /MockTaste UI/);
+  }
+  for (const file of ['tokens.css', 'components.css', 'patterns.css']) {
+    const response = await request(`/design-system/${file}`);
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get('content-type'), /text\/css/);
+  }
+  assert.equal((await request('/design-system/private.json')).status, 404);
+  assert.equal((await request('/design-system/..%2f..%2fserver.mjs')).status, 404);
   assert.equal((await request('/admin')).status, 302);
   for (const route of ['/api/status', '/api/materials', '/api/export', '/api/student/state']) assert.equal((await request(route)).status, 401);
   const alice = await signup('alice@example.com');

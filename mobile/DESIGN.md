@@ -2,32 +2,32 @@
 name: MockTaste Android
 description: Native camera-first study and private study-mate sharing
 colors:
-  primary-light: "#384bc2"
-  primary-dark: "#b8c4ff"
+  primary-light: "#141414"
+  primary-dark: "#f5f5f5"
   on-primary-light: "#ffffff"
-  on-primary-dark: "#102577"
-  primary-container-light: "#e1e5ff"
-  primary-container-dark: "#293b91"
-  on-primary-container-light: "#102577"
-  on-primary-container-dark: "#e1e5ff"
-  secondary-container-light: "#e1e7f6"
-  secondary-container-dark: "#29344f"
-  tertiary-light: "#16765c"
-  tertiary-dark: "#8ed8b9"
-  tertiary-container-light: "#b4f0d5"
-  tertiary-container-dark: "#064f3c"
-  background-light: "#f5f7fb"
-  background-dark: "#10131d"
+  on-primary-dark: "#141414"
+  primary-container-light: "#e9e9e9"
+  primary-container-dark: "#3a3a3a"
+  on-primary-container-light: "#141414"
+  on-primary-container-dark: "#f5f5f5"
+  secondary-container-light: "#e9e9e9"
+  secondary-container-dark: "#3a3a3a"
+  tertiary-light: "#155a38"
+  tertiary-dark: "#75d36a"
+  tertiary-container-light: "#e6f3eb"
+  tertiary-container-dark: "#1e3d25"
+  background-light: "#f5f5f5"
+  background-dark: "#202020"
   surface-light: "#ffffff"
-  surface-dark: "#171b28"
-  on-surface-light: "rgba(28, 27, 31, 1)"
-  on-surface-dark: "rgba(230, 225, 229, 1)"
-  surface-variant-light: "rgba(231, 224, 236, 1)"
-  surface-variant-dark: "rgba(73, 69, 79, 1)"
-  outline-light: "rgba(121, 116, 126, 1)"
-  outline-dark: "rgba(147, 143, 153, 1)"
-  error-light: "rgba(179, 38, 30, 1)"
-  error-dark: "rgba(242, 184, 181, 1)"
+  surface-dark: "#2b2b2b"
+  on-surface-light: "#141414"
+  on-surface-dark: "#f5f5f5"
+  surface-variant-light: "#e9e9e9"
+  surface-variant-dark: "#3a3a3a"
+  outline-light: "#777777"
+  outline-dark: "#777777"
+  error-light: "#9f2d1c"
+  error-dark: "#ff9a88"
 typography:
   displaySmall:
     fontFamily: "sans-serif"
@@ -131,19 +131,19 @@ components:
 
 **Creative North Star: "Study it. Snap it. Make it stick."**
 
-MockTaste's Android app translates the existing indigo, navy, and green identity into native Material 3 controls. The camera leads into private practice and deliberate sharing; light and dark modes follow the device.
+MockTaste's Android app translates the paper-and-ink identity into native Material 3 controls. The camera leads into private practice and deliberate sharing; light and dark modes keep neutral surfaces, near-black actions, and restrained green status.
 
 This document records rules from `src/theme.ts`, `src/App.tsx`, `src/screens.tsx`, `src/useWorkspace.ts`, and the installed React Native Paper MD3 defaults. It is separate from the web system in the repository-root DESIGN.md. Android 36 emulator rendering has been inspected in light/dark themes, at 1.3 font scale, and with an expanded-width override. Installation, camera permissions and capture, and system Back were exercised. Physical-device gesture and performance checks remain separate. See `../docs/android-verification.md` for evidence. **Visual finish: inspected on emulator.**
 
 **Key Characteristics:**
 - Native Material controls and system Android type.
 - Camera-first navigation with five persistent destinations.
-- Tonal working surfaces, indigo actions, and green activity.
+- Paper and graphite working surfaces, ink actions, and green activity.
 - Explicit photo preview and recipient selection before sharing.
 
 ## Colors
 
-Indigo identifies primary actions, navy-tinted surfaces establish the workspace, and green records completed practice. Frontmatter lists app overrides and the inherited MD3 roles reused by native controls. The runtime source remains `appTheme(dark)`; other MD3 colors are inherited unchanged.
+Near-black identifies primary actions, neutral surfaces establish the workspace, and green records completed practice. Frontmatter lists the app's Material roles for light and dark themes. The runtime source is `appTheme(dark)`; all visible Material roles use the shared palette.
 
 ### Primary
 
@@ -151,15 +151,15 @@ Use primary/onPrimary for contained actions and primaryContainer/onPrimaryContai
 
 ### Secondary
 
-The secondaryContainer overrides provide a restrained navigation/tonal background. Its companion onSecondaryContainer and other secondary roles remain inherited from Paper.
+Secondary roles use neutral ink and mist. Their on-colors preserve contrast for native controls.
 
 ### Tertiary
 
-Tertiary and tertiaryContainer drive the practice calendar: a positive count uses the container, and three or more completions use tertiary. Shared streak text is separate from the personal calendar. Native onTertiary roles remain inherited.
+Tertiary and tertiaryContainer drive the practice calendar and indicate completed work. Shared streak text is separate from the personal calendar.
 
 ### Neutral
 
-Background surrounds the workspace; surface hosts inputs and capture controls. Text, outlines, errors, and surfaceVariant retain the installed MD3 definitions. Surface elevation colors also remain Paper defaults; they are not recomputed from the custom indigo. The sidecar's synthesized tonal strips are documentation previews, not extra runtime tokens.
+Background surrounds the workspace; surface hosts inputs and capture controls. Text, outlines, errors, and surfaceVariant use paper, mist, ink, ember-red, and graphite roles. Elevation stays tonal and grayscale, consistent with Material 3.
 
 **The Role Pair Rule.** Use the active theme's role and its on-role partner for controls and text; select light or dark through appTheme rather than mixing modes.
 

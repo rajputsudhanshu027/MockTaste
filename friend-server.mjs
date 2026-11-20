@@ -3,9 +3,10 @@ import fs from 'node:fs';
 import { friendPaper, publicReport, submitFriendPaper } from './lib/friends.mjs';
 
 const css = fs.readFileSync(new URL('./public/exam.css', import.meta.url), 'utf8');
+const designTokens = fs.readFileSync(new URL('./public/design-system/tokens.css', import.meta.url), 'utf8');
 const logo = fs.readFileSync(new URL('./public/logo.svg', import.meta.url), 'utf8');
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const page = (title, body) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#384bc2"><title>${esc(title)} · MockTaste</title><link rel="preload" href="/fonts/public-sans.ttf" as="font" type="font/ttf" crossorigin><style>${css}</style></head><body><header class="exam-brand"><span class="brand-symbol" aria-hidden="true">${logo}</span><div class="brand">MockTaste</div><span class="brand-caption">Exam workspace</span></header><main>${body}</main><footer class="page-footer">RRB NTPC Undergraduate practice</footer></body></html>`;
+const page = (title, body) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f5f5f5"><title>${esc(title)} · MockTaste</title><style>${designTokens}\n${css}</style></head><body><header class="exam-brand"><span class="brand-symbol" aria-hidden="true">${logo}</span><div class="brand">MockTaste</div><span class="brand-caption">Exam workspace</span></header><main>${body}</main><footer class="page-footer">RRB NTPC Undergraduate practice</footer></body></html>`;
 const headers = {
   'content-type': 'text/html; charset=utf-8', 'cache-control': 'private, no-store',
   'x-content-type-options': 'nosniff', 'x-frame-options': 'DENY', 'referrer-policy': 'no-referrer',

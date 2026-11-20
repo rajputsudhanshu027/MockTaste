@@ -28,6 +28,66 @@ test('signup offers only student and teacher accounts with a clear teacher statu
   assert.match(html, /autocomplete="new-password"/);
 });
 
+test('account access renders one form at a time', () => {
+  const login = render('home');
+  const signup = render('home', null, { authMode: 'signup' });
+  assert.equal((login.match(/<form /g) || []).length, 1);
+  assert.equal((signup.match(/<form /g) || []).length, 1);
+  assert.match(login, /id="account-form"/);
+  assert.doesNotMatch(login, /id="signup-form"/);
+  assert.match(signup, /id="signup-form"/);
+  assert.doesNotMatch(signup, /id="account-form"/);
+});
+
+test('account forms isolate submissions, confirm passwords, and reveal passwords accessibly', async () => {
+  const listeners = {};
+  const errorBox = { textContent: '' };
+  const requests = [];
+  const passwordInput = { type: 'password', value: 'unchanged-password' };
+  const context = vm.createContext({
+    document: {
+      querySelector: selector => selector === '#form-error' ? errorBox : { innerHTML: '', textContent: '' },
+      querySelectorAll: () => [],
+      getElementById: () => passwordInput,
+      addEventListener: (type, listener) => { listeners[type] = listener; },
+    },
+    window: { location: { hash: '', search: '' } }, URLSearchParams,
+    FormData: class extends Map { constructor(form) { super(Object.entries(form.fields)); } },
+    setInterval() {}, setTimeout() {}, clearTimeout() {},
+    fetch: async (path, options) => {
+      if (!options) return new Promise(() => {});
+      requests.push({ path, body: JSON.parse(options.body) });
+      return { ok: false, status: 400, json: async () => ({ error: 'Authentication failed.' }) };
+    },
+  });
+  vm.runInContext(fs.readFileSync(new URL('../public/workspace.js', import.meta.url), 'utf8'), context);
+  const submit = async (id, fields) => {
+    listeners.submit({ target: { id, fields }, preventDefault() {} });
+    await new Promise(resolve => setImmediate(resolve));
+  };
+  const fields = { name: 'Sam', email: 'sam@example.com', password: 'matching-password', confirmPassword: 'different-password', role: 'student' };
+  await submit('signup-form', fields);
+  assert.equal(requests.length, 0);
+  assert.match(errorBox.textContent, /Passwords don’t match/);
+  await submit('signup-form', { ...fields, confirmPassword: fields.password });
+  assert.equal(requests[0].path, '/api/account/signup');
+  assert.equal(requests[0].body.role, 'student');
+  assert.equal(requests[0].body.confirmPassword, undefined);
+  vm.runInContext("state.authMode = 'signup';", context);
+  await submit('account-form', { email: fields.email, password: fields.password });
+  assert.equal(requests[1].path, '/api/account/login');
+  const attributes = {};
+  const toggle = { dataset: { action: 'toggle-password', id: 'account-password' }, setAttribute: (key, value) => { attributes[key] = value; } };
+  listeners.click({ target: { closest: () => toggle } });
+  assert.equal(passwordInput.type, 'text');
+  assert.equal(passwordInput.value, 'unchanged-password');
+  assert.equal(attributes['aria-label'], 'Hide password');
+  assert.equal(attributes['aria-pressed'], 'true');
+  listeners.click({ target: { closest: () => toggle } });
+  assert.equal(passwordInput.type, 'password');
+  assert.equal(attributes['aria-label'], 'Show password');
+});
+
 test('student screens support arbitrary subjects with no sharing controls or RRB restrictions', () => {
   for (const view of ['home', 'library', 'create', 'tests', 'settings', 'upload', 'note', 'snaps', 'mates', 'capture']) {
     const html = render(view, student);

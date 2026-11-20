@@ -494,7 +494,7 @@ async function handleApi(req, res, url) {
 }
 
 function serveStatic(res, pathname) {
-  const files = { '/': 'workspace.html', '/admin': 'index.html', '/workspace.js': 'workspace.js', '/workspace.css': 'workspace.css', '/app.js': 'app.js', '/styles.css': 'styles.css', '/logo.svg': 'logo.svg', '/favicon.svg': 'favicon.svg', '/fonts/public-sans.ttf': 'fonts/public-sans.ttf' };
+  const files = { '/': 'workspace.html', '/admin': 'index.html', '/workspace.js': 'workspace.js', '/workspace.css': 'workspace.css', '/app.js': 'app.js', '/styles.css': 'styles.css', '/logo.svg': 'logo.svg', '/favicon.svg': 'favicon.svg', '/fonts/public-sans.ttf': 'fonts/public-sans.ttf', '/design-system': 'design-system/index.html', '/design-system/': 'design-system/index.html', '/design-system/tokens.css': 'design-system/tokens.css', '/design-system/components.css': 'design-system/components.css', '/design-system/patterns.css': 'design-system/patterns.css' };
   const name = files[pathname];
   if (!name) return json(res, 404, { error: 'Not found' });
   const file = path.join(publicDir, name);

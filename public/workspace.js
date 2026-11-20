@@ -58,7 +58,24 @@ function navigate(view) {
 
 function authPage() {
   const signup = state.authMode === 'signup';
-  root.innerHTML = `<div class="auth-layout"><aside class="auth-story">${brand}<div><h1>Make what you study stick.</h1><p>Keep your notes together. Practise with tests made from your material. See your consistency grow, one day at a time.</p></div><p class="privacy-line">Your student workspace is personal and private.</p></aside><main class="auth-main" id="main-content" tabindex="-1"><div class="auth-form"><div class="auth-tabs" role="group" aria-label="Account access"><button type="button" data-action="login-mode" aria-pressed="${!signup}">Sign in</button><button type="button" data-action="signup-mode" aria-pressed="${signup}">Create account</button></div><h2>${signup ? 'Start your workspace' : 'Welcome back'}</h2><p>${signup ? 'A place for your material, practice, and progress.' : 'Pick up where you left off.'}</p><p id="form-error" class="auth-error" role="alert">${esc(state.error)}</p><form id="account-form">${signup ? '<div class="field"><label for="account-name">Your name</label><input id="account-name" name="name" autocomplete="name" maxlength="80" required></div><div class="field"><label for="account-role">I am a</label><select id="account-role" name="role"><option value="student">Student</option><option value="teacher">Teacher</option></select><span class="hint">Teacher accounts can sign in; classroom features are coming later.</span></div>' : ''}<div class="field"><label for="account-email">Email address</label><input id="account-email" name="email" type="email" autocomplete="email" maxlength="254" required></div><div class="field"><label for="account-password">Password</label><input id="account-password" name="password" type="password" autocomplete="${signup ? 'new-password' : 'current-password'}" ${signup ? 'minlength="10"' : ''} maxlength="128" required>${signup ? '<span class="hint">Use at least 10 characters.</span>' : ''}</div><button class="btn primary" type="submit">${signup ? 'Create account' : 'Sign in'}</button></form></div></main></div>`;
+  const prefix = signup ? 'signup' : 'account';
+  const passwordField = (id, name, label, placeholder, autocomplete) => `<div class="ds-field"><label class="ds-label" for="${id}">${label}</label><div class="ds-password"><input class="ds-input" id="${id}" name="${name}" type="password" placeholder="${placeholder}" autocomplete="${autocomplete}" ${signup ? 'minlength="10"' : ''} maxlength="128" required><button class="ds-icon-button" type="button" data-action="toggle-password" data-id="${id}" aria-label="Show ${label.toLowerCase()}" aria-pressed="false" aria-controls="${id}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="ds-eye-slash" d="m4 4 16 16"/></svg></button></div></div>`;
+  root.innerHTML = `<div class="ds-page ds-page--entry" data-ds-theme="day"><main class="ds-entry" id="main-content" tabindex="-1">
+    <a class="ds-brand" href="/"><img src="/logo.svg" width="36" height="36" alt=""><span>MockTaste</span></a>
+    <section class="ds-panel" aria-labelledby="${prefix}-heading">
+      <header class="ds-form-heading"><h1 class="ds-heading" id="${prefix}-heading">${signup ? 'Create your account' : 'Welcome back'}</h1><p class="ds-copy">${signup ? 'A place for your material, practice, and progress.' : 'Pick up where you left off.'}</p></header>
+      <form id="${signup ? 'signup-form' : 'account-form'}" class="ds-form">
+        ${signup ? '<div class="ds-field"><label class="ds-label" for="signup-name">Your name</label><input class="ds-input" id="signup-name" name="name" placeholder="Your name" autocomplete="name" maxlength="80" required></div>' : ''}
+        <div class="ds-field"><label class="ds-label" for="${prefix}-email">Email address</label><input class="ds-input" id="${prefix}-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" maxlength="254" required></div>
+        ${passwordField(`${prefix}-password`, 'password', 'Password', signup ? 'At least 10 characters' : 'Enter your password', signup ? 'new-password' : 'current-password')}
+        ${signup ? `${passwordField('signup-confirm', 'confirmPassword', 'Confirm password', 'Repeat your password', 'new-password')}<div class="ds-field ds-role"><label class="ds-label" for="signup-role">Account type</label><select class="ds-input" id="signup-role" name="role" aria-describedby="teacher-status"><option value="student">Student</option><option value="teacher">Teacher</option></select><span class="ds-field-note ds-role-note" id="teacher-status">Teacher accounts can sign in; classroom features are coming later.</span></div>` : ''}
+        <p id="form-error" class="ds-alert" role="alert">${esc(state.error)}</p>
+        <button class="ds-button ds-button--block" type="submit">${signup ? 'Create account' : 'Sign in'}</button>
+      </form>
+      <p class="ds-account-switch">${signup ? 'Already have an account?' : 'New to MockTaste?'} <button class="ds-link" type="button" data-action="${signup ? 'login-mode' : 'signup-mode'}">${signup ? 'Sign in' : 'Create an account'}</button></p>
+    </section>
+    <p class="ds-note ds-entry-note">Your student workspace is personal and private.</p>
+  </main></div>`;
 }
 
 function shell(content) {
@@ -274,7 +291,15 @@ document.addEventListener('click', event => {
   const target = event.target.closest('[data-action]');
   if (!target) return;
   const { action, id } = target.dataset;
-  if (action === 'login-mode' || action === 'signup-mode') { state.authMode = action === 'signup-mode' ? 'signup' : 'login'; state.error = ''; render(); return; }
+  if (action === 'toggle-password') {
+    const input = document.getElementById(id);
+    const visible = input.type === 'password';
+    input.type = visible ? 'text' : 'password';
+    target.setAttribute('aria-pressed', String(visible));
+    target.setAttribute('aria-label', `${visible ? 'Hide' : 'Show'} ${id.endsWith('confirm') ? 'confirm password' : 'password'}`);
+    return;
+  }
+  if (action === 'login-mode' || action === 'signup-mode') { if (state.busy) return; state.authMode = action === 'signup-mode' ? 'signup' : 'login'; state.error = ''; render(); document.querySelector(state.authMode === 'signup' ? '#signup-name' : '#account-email')?.focus({ preventScroll: true }); return; }
   if (action === 'nav') {
     if (state.view === 'test' && !window.confirm('The timer will keep running. Leave this test?')) return;
     if (['snaps', 'mates'].includes(id)) { perform(async () => { await refresh(); navigate(id); }); return; }
@@ -356,15 +381,22 @@ function fileData(file) {
 }
 document.addEventListener('submit', event => {
   const form = event.target;
-  if (!['account-form', 'upload-form', 'note-form', 'create-form', 'test-form', 'mate-form', 'snap-photo-form', 'snap-quiz-form', 'send-snap-form'].includes(form.id)) return;
+  if (!['account-form', 'signup-form', 'upload-form', 'note-form', 'create-form', 'test-form', 'mate-form', 'snap-photo-form', 'snap-quiz-form', 'send-snap-form'].includes(form.id)) return;
   event.preventDefault();
   if (form.id === 'test-form') { submitTest(); return; }
   const data = new FormData(form);
   perform(async () => {
-    if (form.id === 'account-form') {
+    if (form.id === 'account-form' || form.id === 'signup-form') {
       const payload = Object.fromEntries(data);
+      const signup = form.id === 'signup-form';
+      if (signup && payload.password !== payload.confirmPassword) throw new Error('Passwords don’t match. Enter the same password in both fields.');
+      delete payload.confirmPassword;
       payload.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const result = await api(`/api/account/${state.authMode === 'signup' ? 'signup' : 'login'}`, { method: 'POST', body: payload });
+      const submitButton = form.querySelector?.('button[type="submit"]');
+      if (submitButton) { submitButton.textContent = signup ? 'Creating account…' : 'Signing in…'; submitButton.setAttribute('aria-busy', 'true'); }
+      let result;
+      try { result = await api(`/api/account/${signup ? 'signup' : 'login'}`, { method: 'POST', body: payload }); }
+      finally { if (submitButton) { submitButton.textContent = signup ? 'Create account' : 'Sign in'; submitButton.removeAttribute('aria-busy'); } }
       state.user = result.user; state.error = ''; state.view = 'home';
       await enterWorkspace();
     }

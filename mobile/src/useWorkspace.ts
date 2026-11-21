@@ -14,7 +14,7 @@ export function useWorkspace({ session, onExpired, signOut }: { session: Session
   const api = useMemo(() => new MobileApi(session.base, session.token, onExpired), [session.base, session.token, onExpired]);
   const [data, setData] = useState<any>(null); const [tab, setTab] = useState('camera'); const [detail, setDetail] = useState<Detail>(null);
   const detailRef = useRef(detail); detailRef.current = detail;
-  const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false); const busyRef = useRef(false); const [refreshing, setRefreshing] = useState(false);
+  const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false); const busyRef = useRef(false); const [refreshing, setRefreshing] = useState(true); const visibleRefreshRef = useRef(false);
   const [active, setActive] = useState(AppState.currentState === 'active');
   const [photo, setPhoto] = useState<{ uri: string; base64: string } | null>(null); const photoRef = useRef<string | undefined>(undefined); const [caption, setCaption] = useState('');
   const [job, setJob] = useState<any>(null); const [miniIndex, setMiniIndex] = useState(0); const [miniAnswers, setMiniAnswers] = useState<Record<string, number>>({}); const [selectedMates, setSelectedMates] = useState<string[]>([]);
@@ -23,7 +23,24 @@ export function useWorkspace({ session, onExpired, signOut }: { session: Session
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]); const [testTitle, setTestTitle] = useState(''); const [testCount, setTestCount] = useState('10'); const [testMinutes, setTestMinutes] = useState('15'); const [difficulty, setDifficulty] = useState('medium');
   const [testAnswers, setTestAnswers] = useState<Record<string, number>>({}); const answerRef = useRef<Record<string, number>>({}); const queue = useRef<Promise<any>>(Promise.resolve()); const submitRef = useRef(false); const [submittingId, setSubmittingId] = useState<string | null>(null); const [clock, setClock] = useState(Date.now());
   const [confirm, setConfirm] = useState<{ title: string; text: string; action: () => void } | null>(null);
-  const refresh = useCallback(async () => { const result = await api.student('/state'); setData(result); return result; }, [api]);
+  const refreshSequence = useRef(0);
+  const lastAppliedRefresh = useRef(0);
+  const refresh = useCallback(async () => {
+    const sequence = ++refreshSequence.current;
+    const result = await api.student('/state');
+    if (sequence > lastAppliedRefresh.current) {
+      lastAppliedRefresh.current = sequence;
+      setData(result);
+    }
+    return result;
+  }, [api]);
+  const pendingBackgroundRefresh = useRef<Promise<any> | null>(null);
+  const refreshInBackground = useCallback(() => {
+    if (!pendingBackgroundRefresh.current) {
+      pendingBackgroundRefresh.current = refresh().finally(() => { pendingBackgroundRefresh.current = null; });
+    }
+    return pendingBackgroundRefresh.current;
+  }, [refresh]);
   const run = async (task: () => Promise<void>) => {
     if (busyRef.current) return;
     busyRef.current = true; setBusy(true);
@@ -32,16 +49,28 @@ export function useWorkspace({ session, onExpired, signOut }: { session: Session
   };
   const acceptPhoto = (value: { uri: string; base64: string }) => { removeCachedFile(photoRef.current); photoRef.current = value.uri; setPhoto(value); };
   const discardPhoto = () => { removeCachedFile(photoRef.current); photoRef.current = undefined; setPhoto(null); setCaption(''); };
-  const refreshVisible = () => { setRefreshing(true); refresh().catch(error => setMessage(error.message)).finally(() => setRefreshing(false)); };
+  const refreshVisible = () => {
+    if (visibleRefreshRef.current) return;
+    visibleRefreshRef.current = true;
+    setRefreshing(true);
+    refreshInBackground().catch(error => setMessage(error.message)).finally(() => {
+      visibleRefreshRef.current = false;
+      setRefreshing(false);
+    });
+  };
   useEffect(() => {
     let mounted = true;
-    api.request('/api/mobile/session').then(() => refresh()).then(async () => {
-      const saved = await SecureStore.getItemAsync(`mocktaste.job.${session.user.id}`);
-      if (saved && mounted) { setJob(JSON.parse(saved)); setDetail({ kind: 'job' }); }
+    SecureStore.getItemAsync(`mocktaste.job.${session.user.id}`).then(saved => {
+      if (!saved || !mounted) return;
+      const restored = JSON.parse(saved);
+      setJob((current: any) => current || restored);
+      setDetail(current => current || { kind: 'job' });
     }).catch(error => { if (mounted) setMessage(error.message); });
-    const listener = AppState.addEventListener('change', value => { setActive(value === 'active'); if (value === 'active') refresh().catch(error => setMessage(error.message)); });
+    refreshInBackground().catch(error => { if (mounted) setMessage(error.message); })
+      .finally(() => { if (mounted) setRefreshing(false); });
+    const listener = AppState.addEventListener('change', value => { setActive(value === 'active'); if (value === 'active') refreshInBackground().catch(error => setMessage(error.message)); });
     return () => { mounted = false; listener.remove(); removeCachedFile(photoRef.current); };
-  }, [api, refresh, session.user.id]);
+  }, [refreshInBackground, session.user.id]);
   const startJob = async (jobId: string) => {
     const value = { id: jobId, progress: 'Starting…', photoUri: photoRef.current };
     await SecureStore.setItemAsync(`mocktaste.job.${session.user.id}`, JSON.stringify(value)); setJob(value); setDetail({ kind: 'job' });
@@ -87,7 +116,8 @@ export function useWorkspace({ session, onExpired, signOut }: { session: Session
   };
   useEffect(() => { const listener = BackHandler.addEventListener('hardwareBackPress', back); return () => listener.remove(); });
   const changeTab = (next: string) => {
-    const action = () => { setDetail(null); setTab(next); if (next !== 'camera') refresh().catch(error => setMessage(error.message)); };
+    if (next === tab && !detail) return;
+    const action = () => { setDetail(null); setTab(next); if (next !== 'camera') refreshInBackground().catch(error => setMessage(error.message)); };
     if (detail?.kind === 'test' && !detail.value.test.attempt) setConfirm({ title: 'Leave this test?', text: 'Your timer will keep running.', action }); else action();
   };
   const openSnap = (id: string, received = false) => run(async () => {

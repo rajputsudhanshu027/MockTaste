@@ -1,4 +1,11 @@
 /* MockTaste UI: the only source of web design values. */
+@font-face {
+  font-family: "Public Sans";
+  src: url("/fonts/public-sans.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 :root {
   --ds-font-family: Arial, Helvetica, sans-serif;
   --ds-font-mono: "IBM Plex Mono", "JetBrains Mono", "Space Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
@@ -43,6 +50,21 @@
   --ds-focus-width: 2px;
   --ds-focus-offset: 3px;
   --ds-entry-width: 420px;
+  --ds-entry-frame-width: 1040px;
+  --ds-entry-frame-min-height: 608px;
+  --ds-entry-title-size: clamp(32px, 4vw, 42px);
+  --ds-entry-display-size: clamp(40px, 5vw, 62px);
+  --ds-entry-tracking: -.045em;
+  --ds-entry-font: "Public Sans", var(--ds-font-family);
+  --ds-entry-paper: #e6eee5;
+  --ds-entry-paper-ink: #19392b;
+  --ds-entry-paper-line: #325c4626;
+  --ds-entry-ink: #213d30;
+  --ds-entry-ink-hover: #315441;
+  --ds-entry-control-line: #858d86;
+  --ds-entry-grid-size: 24px;
+  --ds-entry-spinner-size: 16px;
+  --ds-entry-spinner-duration: 700ms;
   --ds-page-width: 1120px;
   --ds-sidebar-width: 180px;
   --ds-reading-width: 65ch;

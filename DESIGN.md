@@ -87,7 +87,7 @@ Authentication and initial boot/loading markup use `ds-*` components and pattern
 
 Use semantic `--ds-color-*` roles. The light scheme uses a `#f5f5f5` paper canvas, a subtle `#d9d9d9` 24px grid, white surfaces, and `#141414` ink. Primary actions are near-black with white type. Mist (`#e9e9e9`) groups secondary information. Signal green and forest green mark successful states; ember indicates warnings. Highlight yellow is only for inline marked words, never a large panel. Errors use a readable warm red. Cards and photo tiles have fine hairlines and no shadows.
 
-Set `data-ds-theme="day"` on web authentication to share the grid paper, black actions, and white surfaces. Sign-in and account creation share the same card, stacked fields, and action treatment; creation grows naturally to fit its additional fields. Keep green and ember tied to functional status. A graphite night scheme remains available. The library owns page textures and component materials. Never introduce a private palette or gradient in a feature.
+Set `data-ds-theme="day"` on web authentication. Both modes share a white form surface, a sage grid for the workspace introduction, and a forest ink primary action. Entry uses the locally hosted Public Sans font. The library owns these tokens and textures.
 
 ## Typography
 
@@ -97,7 +97,7 @@ Questions use 20–22px and generous line spacing. Scores and timers use tabular
 
 ## Layout
 
-Compose layouts in `patterns.css`. Entry centers the brand above one content-sized white work sheet, at most 420px wide, over the shared grid. It allows vertical scrolling on short screens. Outer padding is 40px by 24px; at `max-width: 760px`, it is 28px by 20px. Panel padding reduces from 32px to 24px. Render only the selected form. The catalog uses a 1120px maximum width and 180px navigation column, becoming one column at the compact breakpoint.
+Compose layouts in `patterns.css`. Account entry places the brand above a frame up to 1040px wide. Desktop pairs the workspace introduction with one form and places the two sign-up password fields side by side. At 760px and below, the introduction is hidden and a single column form uses up to 420px. The page scrolls on short screens. The catalog uses a 1120px maximum width and 180px navigation column, becoming one column at the compact breakpoint.
 
 Keep the owner workspace's 264px light navigation rail with hairline divider, 88px white header, and left-aligned content within 1480px. Navigation is ghost text in uppercase mono; the selected item uses an ink fill. Keep Create a test prominent. The overview pairs a clear launch surface with a three-step guide and quiet summary strip. Test creation pairs upload with configuration on large screens and stacks them on smaller screens. Photo collections use loose CSS columns and natural image proportions inside 16px hairline frames; columns collapse with available width. Mobile navigation scrolls horizontally, counts become rows, and fields stack without shrinking text. Preserve long file names and question text. Saved tests precede personal attempts; sharing and received reports precede collapsed connection settings.
 
@@ -107,7 +107,7 @@ Friend exams use one reading column with visible radio controls, question number
 
 Use borders and paper contrast for grouping. Panels, cards, and controls have no shadows, glass, blur, or gradient rims. The shared grid is part of the working surface. Depth and fill values belong to `tokens.css`.
 
-Controls transition over 150ms. Entry panels move into place over 350ms using the shared easing and a 4px starting offset. Entry animation runs only without a reduced-motion preference; reduced motion disables input and button transitions. Keep this behavior in shared components and patterns.
+Controls transition over 150ms. Account entry holds the form position when switching modes. Its submit indicator spins when motion is allowed. Reduced motion disables input and button transitions.
 
 ## Shapes
 
@@ -127,12 +127,10 @@ Load tokens before components and patterns. The document body owns the paper can
 | Password | `.ds-password`, `.ds-icon-button`, `.ds-eye-slash` | Synchronize Show/Hide labels, `aria-controls`, and `aria-pressed` with visibility. |
 | Feedback | `.ds-alert` | Alert region for request/validation errors; `aria-invalid` on invalid fields. Empty feedback is hidden. |
 | Skip navigation | `.ds-skip-link` | Keyboard-visible bypass link using the shared stacking token; supply a focusable main-content target. |
-| Entry | `.ds-page--entry`, `.ds-entry`, `.ds-form-heading`, `.ds-form`, `.ds-account-switch`, `.ds-entry-note` | Brand, one form panel, account switch, and privacy note. |
+| Entry | `.ds-entry--split`, `.ds-entry-frame`, `.ds-entry-modes`, `.ds-form` | Brand, workspace introduction, mode switch, and one form. |
 | Account role | `.ds-field.ds-role`, `.ds-role-note` | Native Student/Teacher select; classroom guidance for Teacher. |
 
-Start sign-in or account creation with `<div class="ds-page ds-page--entry" data-ds-theme="day">`, then compose `.ds-entry`, `.ds-panel`, labeled fields, and `.ds-button.ds-button--block`. Both modes share the same ink action; reserve green for success feedback. The catalog demonstrates the actual shared controls, variants, and states.
-
-Sign-in contains email and password; sign-up adds name, password confirmation, and the public role selector. Account switching changes the selected form and focuses its first field. During submission show “Signing in…” or “Creating account…”, set `aria-busy`, prevent duplicate requests and account switching, and restore state when finished. Keep privacy text below the card. Decorative light stays outside the accessibility tree. Simple SVG icons supplement visible labels; preserve native file inputs elsewhere.
+Sign-in contains email and password. Sign-up adds name, password confirmation, and the account type selector. Switching modes keeps the email and focus on the selected option. During submission show the current step, set `aria-busy`, and prevent duplicate requests and mode switching. If password confirmation fails, link the message to that field and move focus there.
 
 ## Do's and Don'ts
 

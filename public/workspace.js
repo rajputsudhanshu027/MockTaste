@@ -35,7 +35,7 @@ async function perform(task) {
     state.error = error.message;
     const errorBox = document.querySelector('#form-error');
     if (errorBox) errorBox.textContent = error.message;
-    toast(error.message);
+    if (!errorBox || state.user) toast(error.message);
   } finally {
     state.busy = false;
     buttons.forEach(({ item, disabled }) => { item.disabled = disabled; });
@@ -53,28 +53,70 @@ function navigate(view) {
   state.view = view; state.error = '';
   window.location.hash = view === 'snap' && state.snap ? `snap/${state.snap.id}` : view;
   render();
+  window.scrollTo({ top: 0, behavior: 'instant' });
   document.querySelector('#main-content')?.focus({ preventScroll: true });
+}
+
+async function refreshSocialView(view) {
+  if (state.busy) return;
+  const previous = state.data;
+  const main = document.querySelector('#main-content');
+  try {
+    const updated = await studentApi('/state');
+    if (state.data !== previous || state.view !== view || !main.isConnected || state.busy) return;
+    if (document.activeElement !== main || JSON.stringify(updated.social) === JSON.stringify(previous.social)) return;
+    if (main.querySelector('#mate-form input')?.value) return;
+    state.data = updated;
+    render();
+    document.querySelector('#main-content')?.focus({ preventScroll: true });
+  } catch (error) {
+    if (main.isConnected) toast(error.message);
+  }
 }
 
 function authPage() {
   const signup = state.authMode === 'signup';
   const prefix = signup ? 'signup' : 'account';
-  const passwordField = (id, name, label, placeholder, autocomplete) => `<div class="ds-field"><label class="ds-label" for="${id}">${label}</label><div class="ds-password"><input class="ds-input" id="${id}" name="${name}" type="password" placeholder="${placeholder}" autocomplete="${autocomplete}" ${signup ? 'minlength="10"' : ''} maxlength="128" required><button class="ds-icon-button" type="button" data-action="toggle-password" data-id="${id}" aria-label="Show ${label.toLowerCase()}" aria-pressed="false" aria-controls="${id}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="ds-eye-slash" d="m4 4 16 16"/></svg></button></div></div>`;
-  root.innerHTML = `<div class="ds-page ds-page--entry" data-ds-theme="day"><main class="ds-entry" id="main-content" tabindex="-1">
-    <a class="ds-brand" href="/"><img src="/logo.svg" width="36" height="36" alt=""><span>MockTaste</span></a>
-    <section class="ds-panel" aria-labelledby="${prefix}-heading">
-      <header class="ds-form-heading"><h1 class="ds-heading" id="${prefix}-heading">${signup ? 'Create your account' : 'Welcome back'}</h1><p class="ds-copy">${signup ? 'A place for your material, practice, and progress.' : 'Pick up where you left off.'}</p></header>
+  const passwordField = (id, name, label, autocomplete, hint = '') => `
+    <div class="ds-field">
+      <label class="ds-label" for="${id}">${label}</label>
+      <div class="ds-password">
+        <input class="ds-input" id="${id}" name="${name}" type="password" autocomplete="${autocomplete}"
+          ${signup ? 'minlength="10"' : ''} ${hint ? `aria-describedby="${id}-hint"` : ''} maxlength="128" required>
+        <button class="ds-icon-button" type="button" data-action="toggle-password" data-id="${id}"
+          aria-label="Show ${label.toLowerCase()}" aria-pressed="false" aria-controls="${id}">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="ds-eye-slash" d="m4 4 16 16"/></svg>
+        </button>
+      </div>
+      ${hint ? `<span class="ds-field-note" id="${id}-hint">${hint}</span>` : ''}
+    </div>`;
+  root.innerHTML = `<div class="ds-page ds-page--entry" data-ds-theme="day"><main class="ds-entry ds-entry--split" id="main-content" tabindex="-1">
+    <header class="ds-entry-header"><a class="ds-brand" href="/"><img src="/logo.svg" width="36" height="36" alt=""><span>MockTaste</span></a></header>
+    <div class="ds-panel ds-entry-frame">
+      <aside class="ds-entry-story" aria-label="About your study workspace">
+        <div><p class="ds-entry-story-title">From notes to test day.</p><p class="ds-copy">Turn the material you already study into practice for your next exam.</p></div>
+        <ul class="ds-entry-steps"><li>Save your study material</li><li>Make a practice test</li><li>Review your answers</li></ul>
+      </aside>
+      <section class="ds-entry-content" aria-labelledby="${prefix}-heading">
+      <div class="ds-entry-modes" role="group" aria-label="Account options">
+        <button type="button" data-action="login-mode" aria-pressed="${!signup}">Sign in</button>
+        <button type="button" data-action="signup-mode" aria-pressed="${signup}">Create account</button>
+      </div>
+      <header class="ds-form-heading"><h1 class="ds-heading" id="${prefix}-heading">${signup ? 'Create your account' : 'Welcome back'}</h1><p class="ds-copy">${signup ? 'Set up your own study workspace.' : 'Sign in to pick up your practice.'}</p></header>
       <form id="${signup ? 'signup-form' : 'account-form'}" class="ds-form">
         ${signup ? '<div class="ds-field"><label class="ds-label" for="signup-name">Your name</label><input class="ds-input" id="signup-name" name="name" placeholder="Your name" autocomplete="name" maxlength="80" required></div>' : ''}
-        <div class="ds-field"><label class="ds-label" for="${prefix}-email">Email address</label><input class="ds-input" id="${prefix}-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" maxlength="254" required></div>
-        ${passwordField(`${prefix}-password`, 'password', 'Password', signup ? 'At least 10 characters' : 'Enter your password', signup ? 'new-password' : 'current-password')}
-        ${signup ? `${passwordField('signup-confirm', 'confirmPassword', 'Confirm password', 'Repeat your password', 'new-password')}<div class="ds-field ds-role"><label class="ds-label" for="signup-role">Account type</label><select class="ds-input" id="signup-role" name="role" aria-describedby="teacher-status"><option value="student">Student</option><option value="teacher">Teacher</option></select><span class="ds-field-note ds-role-note" id="teacher-status">Teacher accounts can sign in; classroom features are coming later.</span></div>` : ''}
+        <div class="ds-field"><label class="ds-label" for="${prefix}-email">Email address</label><input class="ds-input" id="${prefix}-email" name="email" type="email" placeholder="you@example.com" autocomplete="${signup ? 'email' : 'username'}" maxlength="254" required></div>
+        ${signup ? `<div class="ds-form-pair">
+          ${passwordField('signup-password', 'password', 'Password', 'new-password', 'At least 10 characters')}
+          ${passwordField('signup-confirm', 'confirmPassword', 'Confirm password', 'new-password')}
+        </div>
+        <div class="ds-field ds-role"><label class="ds-label" for="signup-role">Account type</label><select class="ds-input" id="signup-role" name="role" aria-describedby="teacher-status"><option value="student">Student</option><option value="teacher">Teacher</option></select><span class="ds-field-note ds-role-note" id="teacher-status">Classroom features are coming later.</span></div>` : passwordField('account-password', 'password', 'Password', 'current-password')}
         <p id="form-error" class="ds-alert" role="alert">${esc(state.error)}</p>
-        <button class="ds-button ds-button--block" type="submit">${signup ? 'Create account' : 'Sign in'}</button>
+        <button class="ds-button ds-button--block" type="submit"><span class="ds-entry-progress" hidden aria-hidden="true"></span><span>${signup ? 'Create account' : 'Sign in'}</span></button>
       </form>
-      <p class="ds-account-switch">${signup ? 'Already have an account?' : 'New to MockTaste?'} <button class="ds-link" type="button" data-action="${signup ? 'login-mode' : 'signup-mode'}">${signup ? 'Sign in' : 'Create an account'}</button></p>
-    </section>
-    <p class="ds-note ds-entry-note">Your student workspace is personal and private.</p>
+      <p class="ds-note">Your student notes, tests, and results are private.</p>
+      </section>
+    </div>
   </main></div>`;
 }
 
@@ -135,7 +177,7 @@ function settings() {
   shell(`${heading('Your account', 'Your study workspace and AI connection.')}<div class="grid two"><section class="card workspace-help"><h2 class="section-heading">Profile</h2><p><strong>${esc(state.user.name)}</strong><br>${esc(state.user.email)}</p><p>Student account · ${esc(state.user.timeZone)}</p><p>Your activity calendar uses this time zone. Completed tests count toward your streak; logins and uploads do not.</p><p>Notes, tests, and results are private to your account.</p>${button('Sign out', 'logout')}</section><section class="card workspace-help"><h2 class="section-heading">Your AI connection</h2><p>${state.data.auth.connected ? 'Your ChatGPT account is connected.' : 'Connect your ChatGPT account to generate tests and read scanned pages.'}</p><p>Only selected study text or page images are sent for AI requests. Generation depends on your account’s available usage. Saved tests can be taken without an AI connection.</p>${button(state.data.auth.connected ? 'Disconnect AI' : 'Connect ChatGPT', state.data.auth.connected ? 'disconnect-ai' : 'connect-ai', '', true)}</section></div>`);
 }
 function jobPage() {
-  shell(`${heading('Preparing your practice', 'Your saved material stays available while this task runs.')}<section class="job-state"><h2 class="section-heading" role="status">${esc(state.job?.progress || 'Starting…')}</h2><progress aria-label="Task progress"></progress><p>Keep this page open, or come back shortly. You can return to your notes while it finishes.</p>${button('Back to library', 'nav', 'library')}</section>`);
+  shell(`${heading('Preparing your practice', 'Your saved material stays available while this task runs.')}<section class="job-state"><h2 class="section-heading" id="job-progress" role="status">${esc(state.job?.progress || 'Starting…')}</h2><progress aria-label="Task progress"></progress><p>Keep this page open, or come back shortly. You can return to your notes while it finishes.</p>${button('Back to library', 'nav', 'library')}</section>`);
 }
 const socialData = () => state.data.social || { code: '', connections: [], own: [], received: [] };
 function snapsPage() {
@@ -218,7 +260,9 @@ async function pollJob() {
     const job = await studentApi(`/jobs/${state.job.id}`);
     if (job.status === 'running') {
       state.job = job;
-      if (state.view === 'job') render();
+      const status = document.querySelector('#job-progress');
+      const progress = job.progress || 'Starting…';
+      if (status && status.textContent !== progress) status.textContent = progress;
       jobTimer = setTimeout(pollJob, 1500);
       return;
     }
@@ -299,13 +343,30 @@ document.addEventListener('click', event => {
     target.setAttribute('aria-label', `${visible ? 'Hide' : 'Show'} ${id.endsWith('confirm') ? 'confirm password' : 'password'}`);
     return;
   }
-  if (action === 'login-mode' || action === 'signup-mode') { if (state.busy) return; state.authMode = action === 'signup-mode' ? 'signup' : 'login'; state.error = ''; render(); document.querySelector(state.authMode === 'signup' ? '#signup-name' : '#account-email')?.focus({ preventScroll: true }); return; }
+  if (action === 'login-mode' || action === 'signup-mode') {
+    if (state.busy || target.getAttribute('aria-pressed') === 'true') return;
+    const email = document.querySelector('.ds-form input[name="email"]').value;
+    state.authMode = action === 'signup-mode' ? 'signup' : 'login';
+    state.error = '';
+    render();
+    document.querySelector('.ds-form input[name="email"]').value = email;
+    document.querySelector(`[data-action="${action}"]`).focus({ preventScroll: true });
+    return;
+  }
   if (action === 'nav') {
+    if (!state.data) return;
     if (state.view === 'test' && !window.confirm('The timer will keep running. Leave this test?')) return;
-    if (['snaps', 'mates'].includes(id)) { perform(async () => { await refresh(); navigate(id); }); return; }
-    navigate(id); return;
+    navigate(id);
+    if (id === 'snaps' || id === 'mates') refreshSocialView(id);
+    return;
   }
   perform(async () => {
+    if (action === 'retry-workspace') {
+      target.disabled = true;
+      target.setAttribute('aria-busy', 'true');
+      target.textContent = 'Opening workspace…';
+      await enterWorkspace();
+    }
     if (action === 'logout') {
       if (state.view === 'test' && !window.confirm('Your saved answers will remain, but the timer keeps running. Sign out?')) return;
       await api('/api/account/logout', { method: 'POST' });
@@ -379,6 +440,14 @@ function fileData(file) {
     reader.readAsDataURL(file);
   });
 }
+document.addEventListener('input', event => {
+  if (!['signup-password', 'signup-confirm'].includes(event.target.id)) return;
+  const confirmation = document.querySelector('#signup-confirm[aria-invalid="true"]');
+  if (!confirmation) return;
+  confirmation.removeAttribute('aria-invalid');
+  confirmation.removeAttribute('aria-describedby');
+  document.querySelector('#form-error').textContent = '';
+});
 document.addEventListener('submit', event => {
   const form = event.target;
   if (!['account-form', 'signup-form', 'upload-form', 'note-form', 'create-form', 'test-form', 'mate-form', 'snap-photo-form', 'snap-quiz-form', 'send-snap-form'].includes(form.id)) return;
@@ -389,16 +458,40 @@ document.addEventListener('submit', event => {
     if (form.id === 'account-form' || form.id === 'signup-form') {
       const payload = Object.fromEntries(data);
       const signup = form.id === 'signup-form';
-      if (signup && payload.password !== payload.confirmPassword) throw new Error('Passwords don’t match. Enter the same password in both fields.');
+      form.querySelector('#form-error').textContent = '';
+      if (signup && payload.password !== payload.confirmPassword) {
+        const confirmation = form.elements.confirmPassword;
+        confirmation.setAttribute('aria-invalid', 'true');
+        confirmation.setAttribute('aria-describedby', 'form-error');
+        form.querySelector('#form-error').textContent = 'Passwords don’t match. Enter the same password in both fields.';
+        confirmation.focus();
+        return;
+      }
       delete payload.confirmPassword;
       payload.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const submitButton = form.querySelector?.('button[type="submit"]');
-      if (submitButton) { submitButton.textContent = signup ? 'Creating account…' : 'Signing in…'; submitButton.setAttribute('aria-busy', 'true'); }
-      let result;
-      try { result = await api(`/api/account/${signup ? 'signup' : 'login'}`, { method: 'POST', body: payload }); }
-      finally { if (submitButton) { submitButton.textContent = signup ? 'Create account' : 'Sign in'; submitButton.removeAttribute('aria-busy'); } }
-      state.user = result.user; state.error = ''; state.view = 'home';
-      await enterWorkspace();
+      const submitButton = form.querySelector('button[type="submit"]');
+      const [spinner, label] = submitButton.children;
+      const idleLabel = label.textContent;
+      const modeButtons = root.querySelectorAll('.ds-entry-modes button');
+      modeButtons.forEach(item => { item.disabled = true; });
+      form.querySelectorAll('input').forEach(item => { item.readOnly = true; });
+      if (signup) form.elements.role.disabled = true;
+      spinner.hidden = false;
+      label.textContent = signup ? 'Creating account…' : 'Signing in…';
+      submitButton.setAttribute('aria-busy', 'true');
+      try {
+        const { user } = await api(`/api/account/${signup ? 'signup' : 'login'}`, { method: 'POST', body: payload });
+        state.user = user; state.error = ''; state.view = 'home';
+        label.textContent = 'Opening workspace…';
+        await enterWorkspace();
+      } finally {
+        label.textContent = idleLabel;
+        spinner.hidden = true;
+        submitButton.removeAttribute('aria-busy');
+        form.querySelectorAll('input').forEach(item => { item.readOnly = false; });
+        if (signup) form.elements.role.disabled = false;
+        modeButtons.forEach(item => { item.disabled = false; });
+      }
     }
     if (form.id === 'upload-form') {
       const files = data.getAll('files');
@@ -440,7 +533,15 @@ document.addEventListener('submit', event => {
 
 async function enterWorkspace() {
   if (state.user.role !== 'student') { render(); return; }
-  await refresh(); render();
+  try { await refresh(); }
+  catch (error) {
+    if (!state.user) return;
+    shell(`${heading('Couldn’t open your workspace', 'You’re signed in. Retry to load your study material.')}<p role="alert">${esc(error.message)}</p>${button('Try again', 'retry-workspace', '', true)}`);
+    document.querySelector('#main-content')?.focus({ preventScroll: true });
+    return;
+  }
+  render();
+  document.querySelector('#main-content')?.focus({ preventScroll: true });
   const jobId = sessionStorage.getItem(`mocktaste-job:${state.user.id}`);
   if (jobId) watchJob(jobId, sessionStorage.getItem(`mocktaste-job-origin:${state.user.id}`) || 'library');
 }
@@ -452,12 +553,12 @@ async function bootstrap() {
     if (['home', 'library', 'create', 'tests', 'settings', 'upload', 'note', 'snaps', 'mates', 'capture'].includes(view)) state.view = view;
     if (user) await enterWorkspace(); else render();
     const snapLink = view.match(/^snap\/([a-f\d-]+)$/);
-    if (user?.role === 'student' && snapLink && !state.job) {
+    if (state.data && snapLink && !state.job) {
       try { await loadSnap(snapLink[1]); } catch (error) { navigate('snaps'); toast(error.message); }
     }
     const query = new URLSearchParams(window.location.search);
     if (query.get('auth_error')) toast(query.get('auth_error'));
-    if (query.has('connected')) { navigate('settings'); toast('AI account connected.'); }
+    if (state.data && query.has('connected')) { navigate('settings'); toast('AI account connected.'); }
   } catch (error) {
     state.user = null; state.error = error.message; render();
   }

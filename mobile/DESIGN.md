@@ -170,7 +170,7 @@ Background surrounds the workspace; surface hosts inputs and capture controls. T
 
 Paper's MD3 type scale is inherited without a custom font configuration. Frontmatter uses portable CSS strings; on Android these correspond to the source's logical font-size/line-height values, with font scaling. Layout dimensions below are density-independent units (dp), not physical pixels.
 
-- **Display:** displaySmall on the sign-in introduction.
+- **Account entry:** headlineMedium for the form heading, bodyMedium for supporting copy, and bodySmall for field guidance. The account form uses a scrollable surface with safe area padding and a 480dp maximum width.
 - **Headline:** headlineMedium for the brand introduction, study code, and job heading; headlineSmall for screen headings, streaks, and quiz questions.
 - **Title:** titleLarge for sections and test questions; titleMedium for compact labels and result detail.
 - **Body:** bodyLarge for reading and options; bodyMedium for supporting content; bodySmall for account and connection guidance.
